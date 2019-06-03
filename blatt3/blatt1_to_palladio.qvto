@@ -1,0 +1,31 @@
+
+modeltype blatt1 "strict" uses 'platform:/resource/Blatt1/model/blatt1.ecore#//blatt1'; //pfad richtig? was tut "strict"?
+modeltype palladio "strict" uses 'pathmap://PCM_MODELS/Palladio.resourcetype'; //wo liegt palladio?
+
+transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
+
+main (){
+	src.Model.rootObjects()[Blatt1]->map Model2Model(); //tatsächliches rootObject herausfinden, indem man ecore mit text-editor öffnet
+}
+
+mapping Model :: Model2Model() Model{
+	
+	name := self.name;
+	packagedElement += self.packagedElement[Interface]->map Interface2Interface();//packagedElement += self.packagedElement[Class]->map Class2Class(); //was hiervon ist qvto syntax und was metamodell inhalt?
+	
+}
+
+mapping Interface :: Interface2Interface() : Interface{
+
+	name := self.name;
+	ownedAttribute += ownedAttribute[Signature]->map Signature2Signature();//ownedAttribute := self.ownedAttribute[Property]->map Property2Property();
+	
+}
+
+mapping Signature :: Signature2Signature() : Signature{
+	
+	name := self.name;
+	returnType := self.returnType; //funktioniert so bestimmt nicht, bedarf garantiert wiederum eines eigenen mappings
+	parameterType := self.parameterType;
+	
+}
