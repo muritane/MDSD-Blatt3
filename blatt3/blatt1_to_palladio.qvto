@@ -1,31 +1,61 @@
-
 modeltype blatt1 "strict" uses 'platform:/resource/Blatt1/model/blatt1.ecore#//blatt1'; //pfad richtig? was tut "strict"?
 modeltype palladio "strict" uses 'pathmap://PCM_MODELS/Palladio.resourcetype'; //wo liegt palladio?
 
 transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
 
 main (){
-	src.Model.rootObjects()[Blatt1]->map Model2Model(); //tatsächliches rootObject herausfinden, indem man ecore mit text-editor öffnet
+	//src.Model.rootObjects()[Blatt1]->map Model2Model(); //tatsächliches rootObject herausfinden, indem man ecore mit text-editor öffnet
+	//src.Model.rootObjects()[Repository:Interface]->map Interface2Interface(); //überflüssig?
+	src.Model.rootObject()[Assembly:AssemblyContext]->map AssemblyContext2AssemblyContext();
+	src.Model.rootObject()[Assembly:AssemblyConnector]->map AssemblyConnector2AssemblyConnector();
+	//src.Model.rootObject()[Repository:Component]->map Component2Component(); //übrflüssig weil alle in assembly-contexten?
 }
 
-mapping Model :: Model2Model() Model{
+//mapping Model :: Model2Model() Model{
 	
-	name := self.name;
-	packagedElement += self.packagedElement[Interface]->map Interface2Interface();//packagedElement += self.packagedElement[Class]->map Class2Class(); //was hiervon ist qvto syntax und was metamodell inhalt?
+//	name := self.name;
+//	packagedElement += self.packagedElement[Interface]->map Interface2Interface();//packagedElement += self.packagedElement[Class]->map Class2Class(); //was hiervon ist qvto syntax und was metamodell inhalt?
+//	packagedElement += self.packagedElement[Component]
+//}
+
+//mapping Repository:Interface :: Interface2Role() :: repository:Role{
+//
+//	name := self.name;
+//	//no such thing as Signature found in PCM //ownedAttribute += ownedAttribute[Signature]->map Signature2Signature();//ownedAttribute := self.ownedAttribute[Property]->map Property2Property();
+//	
+//}
+
+mapping Assembly:AssemblyContext :: AssemblyContext2AssemblyContext() :: core:composition:AssemblyContext {
+	name = self.name;
+	//parentStructure ???
+	encapsulatedComponent = ownedAttribute[component]->map Component2Component(); //1-1 vs. 1-*?
+	//configParameterUsage???
+}
+
+mapping Assembly:AssemblyConnector :: AssemblyConnector2AssemblyConnector() :: core:composition:AssemblyConnector {
+	name = self.name;
+	requiringAssemblyContext = ownedAttribute[requiresAssemblyContext]->map AssemblyContext2AssemblyContext(); //1-1 vs. 1-*?
+	providingAssemblyContext = ownedAttribute[providesAssemblyContext]->map AssemblyContext2AssemblyContext();
+}
+
+mapping Repository:Component :: Component2Component() :: repository:ImplementationComponentType{
+
+	name = self.name;
+	RequiredRoles = ownedAttribute[requiredInterace]->map RequiredInterface2RequiredRole(self);
 	
 }
 
-mapping Interface :: Interface2Interface() : Interface{
-
-	name := self.name;
-	ownedAttribute += ownedAttribute[Signature]->map Signature2Signature();//ownedAttribute := self.ownedAttribute[Property]->map Property2Property();
+mapping Repository:Interface :: RequiredInterface2RequiredRole(Repository:Component requiringComponent) :: repository:RequiredRole {
+	
+	name = self.name;
+	requiringEntity = self.map Component2Component(requiringComponent); //zyklus schlecht? in beispiel auch, also scheinbar ok
 	
 }
 
-mapping Signature :: Signature2Signature() : Signature{
-	
-	name := self.name;
-	returnType := self.returnType; //funktioniert so bestimmt nicht, bedarf garantiert wiederum eines eigenen mappings
-	parameterType := self.parameterType;
-	
-}
+//mapping Signature :: Signature2Signature() : Signature{
+//	
+//	name := self.name;
+//	returnType := self.returnType; //funktioniert so bestimmt nicht, bedarf garantiert wiederum eines eigenen mappings
+//	parameterType := self.parameterType;
+//	
+//}

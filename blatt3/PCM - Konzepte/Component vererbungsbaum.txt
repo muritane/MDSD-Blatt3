@@ -1,0 +1,27 @@
+<core>
+
+
+InterfaceProvidingEntity                            InterfaceRequiringEntity
+    providedRoles_InterfaceProvidingEntity              requiredRoles_InterfaceRequiringEntity
+
+^
+|
+
+InterfaceProvidingRequiringEntity
+
+<repository>
+
+^
+|
+
+RepositoryComponent
+
+^
+|
+
+ImplementationComponentType
+
+^
+|
+
+CompositeComponent -> CompositeProvidingRequiringEntity
