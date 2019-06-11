@@ -7,11 +7,11 @@ main() {
 	srcModel.objects()[blatt1::Assembly::System] -> map System2System();
 	srcModel.objects()[blatt1::Repository::CompositeComponent] -> map CompositeComponent2CompositeComponent();
 	//srcModel.objects()[blatt1::Assembly::AssemblyContext] -> map AssemblyContext2AssemblyContext();
-	//srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
+	srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
 }
 
 mapping blatt1::Assembly::System :: System2System() : palladio::system::System {
-	//self.encapsulatedAssemblyContext.map AssemblyContext2AssemblyContext();
+	assemblyContexts__ComposedStructure := self.encapsulatedAssemblyContext[blatt1::Assembly::AssemblyContext]-> map AssemblyContext2AssemblyContext(result);
 }
 
 mapping blatt1::Repository::CompositeComponent :: CompositeComponent2CompositeComponent() : palladio::repository::CompositeComponent{
@@ -19,19 +19,11 @@ mapping blatt1::Repository::CompositeComponent :: CompositeComponent2CompositeCo
 	assemblyContexts__ComposedStructure := self.encapsulatedAssemblyContext.map AssemblyContext2AssemblyContext(result);
 }
 
-mapping blatt1::Assembly::AssemblyContext ::AssemblyContext2AssemblyContext(parent : palladio::repository::CompositeComponent) : palladio::core::composition::AssemblyContext {
+mapping blatt1::Assembly::AssemblyContext ::AssemblyContext2AssemblyContext(parent : palladio::core::composition::ComposedStructure) : palladio::core::composition::AssemblyContext {
 	entityName := self.name;
-	//parentStructure ???
-	// ERROR: ImplementationComponentType does not conform to the type 'pcm::repository::RepositoryComponent'
-	encapsulatedComponent__AssemblyContext := self.component.map Component2Component(self); //1-1 vs. 1-*?
+	encapsulatedComponent__AssemblyContext := self.component.map Component2Component(self);
 	parentStructure__AssemblyContext := parent;
-	//configParameterUsage???
 }
-
-//mapping blatt1::Assembly::AssemblyConnector :: AssemblyConnector2AssemblyConnector() : palladio::core::composition::AssemblyConnector {
-//	requiringAssemblyContext_AssemblyConnector := self.requiredAssemblyContext.map AssemblyContext2AssemblyContext(); //1-1 vs. 1-*?
-//	providingAssemblyContext_AssemblyConnector := self.providedAssemblyContext.map AssemblyContext2AssemblyContext();
-//}
 
 mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::ImplementationComponentType {
 	init {result.entityName := self.name;}
@@ -51,12 +43,27 @@ mapping blatt1::Repository::Component :: Component2Component(ac : blatt1::Assemb
 //	requiringEntity_RequiredRole := requiringComponent.map Component2Component(); //zyklus schlecht? in beispiel auch, also scheinbar ok
 //}
 
-mapping blatt1::Assembly::Role :: RequiredRole2RequiredRole(requiringComponent : palladio::repository::ImplementationComponentType) : palladio::repository::RequiredRole {
+mapping blatt1::Assembly::Role :: RequiredRole2RequiredRole(requiringComponent : palladio::repository::ImplementationComponentType) : palladio::repository::OperationRequiredRole {
 	init {result.entityName := self.name;}
 	requiringEntity_RequiredRole := requiringComponent;
 }
 
-mapping blatt1::Assembly::Role :: ProvidedRole2ProvidedRole(providingComponent : palladio::repository::ImplementationComponentType) : palladio::repository::ProvidedRole {
+mapping blatt1::Assembly::Role :: ProvidedRole2ProvidedRole(providingComponent : palladio::repository::ImplementationComponentType) : palladio::repository::OperationProvidedRole {
 	init {result.entityName := self.name;}
 	providingEntity_ProvidedRole := providingComponent;
 }
+
+mapping blatt1::Assembly::AssemblyConnector :: AssemblyConnector2AssemblyConnector() : palladio::core::composition::AssemblyConnector {
+	
+	providingAssemblyContext_AssemblyConnector := self.providedAssemblyContext.resolveone(palladio::core::composition::AssemblyContext);// AssemblyContext2AssemblyContext();
+	requiringAssemblyContext_AssemblyConnector := self.requiredAssemblyContext.resolveone(palladio::core::composition::AssemblyContext);
+	providedRole_AssemblyConnector := self.providedRole.resolveone(palladio::repository::OperationProvidedRole);
+	requiredRole_AssemblyConnector := self.requiredRole.resolveone(palladio::repository::OperationRequiredRole);
+}
+
+
+
+
+
+
+
