@@ -4,7 +4,7 @@ modeltype palladio "strict" uses pcm('http://palladiosimulator.org/PalladioCompo
 transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
 
 main() {
-	srcModel.objects()[blatt1::Assembly::System] -> map System2System();
+	srcModel.objects()[blatt1::Assembly::System] -> map System2Allocation();
 	srcModel.objects()[blatt1::Repository::CompositeComponent] -> map CompositeComponent2CompositeComponent();
 	//srcModel.objects()[blatt1::Assembly::AssemblyContext] -> map AssemblyContext2AssemblyContext();
 	srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
@@ -12,6 +12,15 @@ main() {
 
 mapping blatt1::Assembly::System :: System2System() : palladio::system::System {
 	assemblyContexts__ComposedStructure := self.encapsulatedAssemblyContext[blatt1::Assembly::AssemblyContext]-> map AssemblyContext2AssemblyContext(result);
+}
+
+mapping blatt1::Assembly::System :: System2Allocation() : palladio::allocation::Allocation {
+
+	system_Allocation := self.map System2System();
+	targetResourceEnvironment_Allocation := self.environment.map Environment2Environment();
+	entityName := "Allocation";
+	allocationContexts_Allocation := self.allocationContext[blatt1::Allocation::AllocationContext]-> map AllocationContext2AllocationContext(result);
+	
 }
 
 mapping blatt1::Repository::CompositeComponent :: CompositeComponent2CompositeComponent() : palladio::repository::CompositeComponent{
@@ -79,6 +88,13 @@ mapping blatt1::Environment::Container :: Container2Container(environment : pall
 	
 }
 
+mapping blatt1::Allocation::AllocationContext :: AllocationContext2AllocationContext(allocation : palladio::allocation::Allocation) : palladio::allocation::AllocationContext {
+	
+	allocation_AllocationContext := allocation;
+	resourceContainer_AllocationContext := self.targetContainer.resolveone(palladio::resourceenvironment::ResourceContainer);
+	assemblyContext_AllocationContext := self.allocatedAssemblyContext.resolveone(palladio::core::composition::AssemblyContext);
+	
+}
 
 
 
