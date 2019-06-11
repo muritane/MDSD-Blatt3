@@ -61,6 +61,25 @@ mapping blatt1::Assembly::AssemblyConnector :: AssemblyConnector2AssemblyConnect
 	requiredRole_AssemblyConnector := self.requiredRole.resolveone(palladio::repository::OperationRequiredRole);
 }
 
+mapping blatt1::Environment::Environment :: Environment2Environment() : palladio::resourceenvironment::ResourceEnvironment {
+	entityName := "environment";
+	linkingResources__ResourceEnvironment := self.link[blatt1::Environment::Link]->map Link2Link(result);
+	resourceContainer_ResourceEnvironment
+}
+
+mapping blatt1::Environment::Link :: Link2Link(environment : palladio::resourceenvironment::ResourceEnvironment) : palladio::resourceenvironment::LinkingResource {
+	entityName := self.name;
+	resourceEnvironment_LinkingResource := environment;
+	connectedResourceContainers_LinkingResource := self.linkedContainers[blatt1::Environment::Container]->map Container2Container(environment);
+}
+
+mapping blatt1::Environment::Container :: Container2Container(environment : palladio::resourceenvironment::ResourceEnvironment) : palladio::resourceenvironment::ResourceContainer {
+	
+	resourceEnvironment_ResourceContainer := environment;
+	
+}
+
+
 
 
 
