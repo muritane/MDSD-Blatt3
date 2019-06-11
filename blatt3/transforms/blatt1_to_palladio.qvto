@@ -4,9 +4,14 @@ modeltype palladio "strict" uses pcm('http://palladiosimulator.org/PalladioCompo
 transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
 
 main() {
+	srcModel.objects()[blatt1::Assembly::System] -> map System2System();
 	srcModel.objects()[blatt1::Repository::CompositeComponent] -> map CompositeComponent2CompositeComponent();
 	//srcModel.objects()[blatt1::Assembly::AssemblyContext] -> map AssemblyContext2AssemblyContext();
 	//srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
+}
+
+mapping blatt1::Assembly::System :: System2System() : palladio::system::System {
+	//self.encapsulatedAssemblyContext.map AssemblyContext2AssemblyContext();
 }
 
 mapping blatt1::Repository::CompositeComponent :: CompositeComponent2CompositeComponent() : palladio::repository::CompositeComponent{
