@@ -1,61 +1,34 @@
-modeltype blatt1 "strict" uses 'platform:/resource/Blatt1/model/blatt1.ecore#//blatt1'; //pfad richtig? was tut "strict"?
-modeltype palladio "strict" uses 'pathmap://PCM_MODELS/Palladio.resourcetype'; //wo liegt palladio?
+modeltype blatt1 "strict" uses blatt1('http://www.example.org/blatt1');
+modeltype palladio "strict" uses pcm('http://palladiosimulator.org/PalladioComponentModel/5.2');
 
 transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
 
-main (){
-	//src.Model.rootObjects()[Blatt1]->map Model2Model(); //tatsächliches rootObject herausfinden, indem man ecore mit text-editor öffnet
-	//src.Model.rootObjects()[Repository:Interface]->map Interface2Interface(); //überflüssig?
-	src.Model.rootObject()[Assembly:AssemblyContext]->map AssemblyContext2AssemblyContext();
-	src.Model.rootObject()[Assembly:AssemblyConnector]->map AssemblyConnector2AssemblyConnector();
-	//src.Model.rootObject()[Repository:Component]->map Component2Component(); //übrflüssig weil alle in assembly-contexten?
+main() {
+	srcModel.objects()[blatt1::Assembly::AssemblyContext] -> map AssemblyContext2AssemblyContext();
+	srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
 }
 
-//mapping Model :: Model2Model() Model{
-	
-//	name := self.name;
-//	packagedElement += self.packagedElement[Interface]->map Interface2Interface();//packagedElement += self.packagedElement[Class]->map Class2Class(); //was hiervon ist qvto syntax und was metamodell inhalt?
-//	packagedElement += self.packagedElement[Component]
-//}
-
-//mapping Repository:Interface :: Interface2Role() :: repository:Role{
-//
-//	name := self.name;
-//	//no such thing as Signature found in PCM //ownedAttribute += ownedAttribute[Signature]->map Signature2Signature();//ownedAttribute := self.ownedAttribute[Property]->map Property2Property();
-//	
-//}
-
-mapping Assembly:AssemblyContext :: AssemblyContext2AssemblyContext() :: core:composition:AssemblyContext {
-	name = self.name;
+mapping blatt1::Assembly::AssemblyContext ::AssemblyContext2AssemblyContext() : palladio::core::composition::AssemblyContext {
+	entityName := self.name;
 	//parentStructure ???
-	encapsulatedComponent = ownedAttribute[component]->map Component2Component(); //1-1 vs. 1-*?
+	// ERROR: ImplementationComponentType does not conform to the type 'pcm::repository::RepositoryComponent'
+	encapsulatedComponent__AssemblyContext := self.component.map Component2Component(); //1-1 vs. 1-*?
 	//configParameterUsage???
 }
 
-mapping Assembly:AssemblyConnector :: AssemblyConnector2AssemblyConnector() :: core:composition:AssemblyConnector {
-	name = self.name;
-	requiringAssemblyContext = ownedAttribute[requiresAssemblyContext]->map AssemblyContext2AssemblyContext(); //1-1 vs. 1-*?
-	providingAssemblyContext = ownedAttribute[providesAssemblyContext]->map AssemblyContext2AssemblyContext();
+mapping blatt1::Assembly::AssemblyConnector :: AssemblyConnector2AssemblyConnector() : palladio::core::composition::AssemblyConnector {
+	requiringAssemblyContext_AssemblyConnector := self.requiredAssemblyContext.map AssemblyContext2AssemblyContext(); //1-1 vs. 1-*?
+	providingAssemblyContext_AssemblyConnector := self.providedAssemblyContext.map AssemblyContext2AssemblyContext();
 }
 
-mapping Repository:Component :: Component2Component() :: repository:ImplementationComponentType{
-
-	name = self.name;
-	RequiredRoles = ownedAttribute[requiredInterace]->map RequiredInterface2RequiredRole(self);
-	
+// ERROR: Result and out parameters of abstract types must be instantiated or assigned in the init-section
+mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::ImplementationComponentType {
+	entityName := self.name;
+	requiredRoles_InterfaceRequiringEntity := self.requiredInterface.map RequiredInterface2RequiredRole(self);
 }
 
-mapping Repository:Interface :: RequiredInterface2RequiredRole(Repository:Component requiringComponent) :: repository:RequiredRole {
-	
-	name = self.name;
-	requiringEntity = self.map Component2Component(requiringComponent); //zyklus schlecht? in beispiel auch, also scheinbar ok
-	
+// ERROR: Result and out parameters of abstract types must be instantiated or assigned in the init-section
+mapping blatt1::Repository::Interface :: RequiredInterface2RequiredRole(blatt1::Repository::Component requiringComponent) : palladio::repository::RequiredRole {
+	entityName := self.name;
+	requiringEntity_RequiredRole := self.map Component2Component(requiringComponent); //zyklus schlecht? in beispiel auch, also scheinbar ok
 }
-
-//mapping Signature :: Signature2Signature() : Signature{
-//	
-//	name := self.name;
-//	returnType := self.returnType; //funktioniert so bestimmt nicht, bedarf garantiert wiederum eines eigenen mappings
-//	parameterType := self.parameterType;
-//	
-//}
