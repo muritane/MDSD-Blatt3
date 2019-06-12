@@ -13,17 +13,37 @@ main() {
 }
 
 mapping blatt1::DummyClass :: Dummy2Repository() : palladio::repository::Repository {
-	srcModel.objects()[blatt1::Repository::Interface] -> map Interface2Interface(self);
+	srcModel.objects()[blatt1::Repository::Interface] -> map Interface2Interface(result);
 }
 
-mapping blatt1::Repository::Interface :: Interface2Interface(repo : blatt1::DummyClass) : palladio::repository::OperationInterface {
-	init {result.repository__Interface := repo.resolveone(palladio::repository::Repository)}
-	signatures__OperationInterface := self.signature[blatt1::Repository::Types::Signature]->map Signature2Signature(result);
+mapping blatt1::Repository::Interface :: Interface2Interface(repo : palladio::repository::Repository) : palladio::repository::OperationInterface {
+	init {result.repository__Interface := repo}
+	signatures__OperationInterface := self.signature[blatt1::Repository::Types::Signature]->map Signature2Signature(repo, result);
 }
 
-mapping blatt1::Repository::Types::Signature :: Signature2Signature(interface : palladio::repository::OperationInterface) : palladio::repository::OperationSignature {
+mapping blatt1::Repository::Types::Signature :: Signature2Signature(repo : palladio::repository::Repository, interface : palladio::repository::OperationInterface) : palladio::repository::OperationSignature {
 	init {result.entityName := self.name}
 	interface__OperationSignature := interface;
+	if (self->oclIsTypeOf(blatt1::Repository::Types::ComplexType)) returnType__OperationSignature := self.returnType.map Type2CompositeDataType()
+	else returnType__OperationSignature := self.returnType.map Type2PrimitiveDataType()
+	endif;
+}
+
+mapping blatt1::Repository::Types::Type :: Type2CompositeDataType() : palladio::repository::CompositeDataType {
+	init{}
+}
+
+mapping blatt1::Repository::Types::Type :: Type2PrimitiveDataType() : palladio::repository::PrimitiveDataType {
+	init{
+		if (self.oclIsTypeOf(blatt1::Repository::Types::Int)) result.type := palladio::repository::PrimitiveTypeEnum::INT
+		elif (self.oclIsTypeOf(blatt1::Repository::Types::String)) result.type := palladio::repository::PrimitiveTypeEnum::STRING
+		elif (self.oclIsTypeOf(blatt1::Repository::Types::Boolean)) result.type := palladio::repository::PrimitiveTypeEnum::BOOL
+		elif (self.oclIsTypeOf(blatt1::Repository::Types::Double)) result.type := palladio::repository::PrimitiveTypeEnum::DOUBLE
+		elif (self.oclIsTypeOf(blatt1::Repository::Types::Char)) result.type := palladio::repository::PrimitiveTypeEnum::CHAR
+		//elif (self.oclIsTypeOf(blatt1::Repository::Types::Byte)) result.type := palladio::repository::PrimitiveTypeEnum::INT
+		elif (self.oclIsTypeOf(blatt1::Repository::Types::Long)) result.type := palladio::repository::PrimitiveTypeEnum::LONG
+		endif;
+	}
 }
 
 mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::BasicComponent {
