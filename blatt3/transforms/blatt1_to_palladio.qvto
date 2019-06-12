@@ -96,8 +96,7 @@ mapping blatt1::Allocation::AllocationContext :: AllocationContext2AllocationCon
 	
 }
 
-
-
+//mapping DelegationConnector2DelegationConnector wegoptimiert, da pcm dellegationConnector nichts tuts
 
 
 
