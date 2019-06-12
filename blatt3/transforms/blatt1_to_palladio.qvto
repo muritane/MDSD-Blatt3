@@ -17,7 +17,13 @@ mapping blatt1::DummyClass :: Dummy2Repository() : palladio::repository::Reposit
 }
 
 mapping blatt1::Repository::Interface :: Interface2Interface(repo : blatt1::DummyClass) : palladio::repository::OperationInterface {
-	init {result.repository__Interface := repo.resolveone(palladio::repository::Repository);}
+	init {result.repository__Interface := repo.resolveone(palladio::repository::Repository)}
+	signatures__OperationInterface := self.signature[blatt1::Repository::Types::Signature]->map Signature2Signature(result);
+}
+
+mapping blatt1::Repository::Types::Signature :: Signature2Signature(interface : palladio::repository::OperationInterface) : palladio::repository::OperationSignature {
+	init {result.entityName := self.name}
+	interface__OperationSignature := interface;
 }
 
 mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::BasicComponent {
