@@ -34,12 +34,12 @@ mapping blatt1::Assembly::AssemblyContext ::AssemblyContext2AssemblyContext(pare
 	parentStructure__AssemblyContext := parent;
 }
 
-mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::RepositoryComponent {
+mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::BasicComponent {
 	init {result.entityName := self.name;}
 }
 
 // ERROR: Result and out parameters of abstract types must be instantiated or assigned in the init-section
-mapping blatt1::Repository::Component :: Component2Component(ac : blatt1::Assembly::AssemblyContext) : palladio::repository::RepositoryComponent { //anderer Komponententyp, zB RepositoryComponent
+mapping blatt1::Repository::Component :: Component2Component(ac : blatt1::Assembly::AssemblyContext) : palladio::repository::BasicComponent { //anderer Komponententyp, zB BasicComponent
 	init {self.map Component2Component();}
 	//requiredRoles_InterfaceRequiringEntity := self.requiredInterface.map RequiredInterface2RequiredRole(self);
 	requiredRoles_InterfaceRequiringEntity := ac.requiredRole.map RequiredRole2RequiredRole(result);
@@ -52,12 +52,12 @@ mapping blatt1::Repository::Component :: Component2Component(ac : blatt1::Assemb
 //	requiringEntity_RequiredRole := requiringComponent.map Component2Component(); //zyklus schlecht? in beispiel auch, also scheinbar ok
 //}
 
-mapping blatt1::Assembly::Role :: RequiredRole2RequiredRole(requiringComponent : palladio::repository::RepositoryComponent) : palladio::repository::OperationRequiredRole {
+mapping blatt1::Assembly::Role :: RequiredRole2RequiredRole(requiringComponent : palladio::repository::BasicComponent) : palladio::repository::OperationRequiredRole {
 	init {result.entityName := self.name;}
 	requiringEntity_RequiredRole := requiringComponent;
 }
 
-mapping blatt1::Assembly::Role :: ProvidedRole2ProvidedRole(providingComponent : palladio::repository::RepositoryComponent) : palladio::repository::OperationProvidedRole {
+mapping blatt1::Assembly::Role :: ProvidedRole2ProvidedRole(providingComponent : palladio::repository::BasicComponent) : palladio::repository::OperationProvidedRole {
 	init {result.entityName := self.name;}
 	providingEntity_ProvidedRole := providingComponent;
 }
