@@ -4,10 +4,36 @@ modeltype palladio "strict" uses pcm('http://palladiosimulator.org/PalladioCompo
 transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
 
 main() {
+	srcModel.objects()[blatt1::DummyClass] -> map Dummy2Repository();
+	srcModel.objects()[blatt1::Repository::Component] -> map Component2Component();
 	srcModel.objects()[blatt1::Assembly::System] -> map System2Allocation();
 	srcModel.objects()[blatt1::Repository::CompositeComponent] -> map CompositeComponent2CompositeComponent();
 	//srcModel.objects()[blatt1::Assembly::AssemblyContext] -> map AssemblyContext2AssemblyContext();
 	srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
+}
+
+mapping blatt1::DummyClass :: Dummy2Repository() : palladio::repository::Repository {
+	srcModel.objects()[blatt1::Repository::Interface] -> map Interface2Interface(self);
+}
+
+mapping blatt1::Repository::Interface :: Interface2Interface(repo : blatt1::DummyClass) : palladio::repository::OperationInterface {
+	init {result.repository__Interface := repo.resolveone(palladio::repository::Repository);}
+}
+
+mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::BasicComponent {
+	result.entityName := self.name;
+	requiredRoles_InterfaceRequiringEntity := self.requiredInterface.map Interface2RequiredRole(self);
+	providedRoles_InterfaceProvidingEntity := self.providedInterface.map Interface2ProvidedRole(self);
+}
+
+mapping blatt1::Repository::Interface :: Interface2ProvidedRole(comp : blatt1::Repository::Component) : palladio::repository::OperationProvidedRole {
+	init {result.entityName := self.name;}
+	providedInterface__OperationProvidedRole := self.resolveone(palladio::repository::OperationInterface);
+}
+
+mapping blatt1::Repository::Interface :: Interface2RequiredRole(comp : blatt1::Repository::Component) : palladio::repository::OperationRequiredRole {
+	init {result.entityName := self.name;}
+	requiredInterface__OperationRequiredRole := self.resolveone(palladio::repository::OperationInterface);
 }
 
 mapping blatt1::Assembly::System :: System2System() : palladio::system::System {
@@ -30,20 +56,12 @@ mapping blatt1::Repository::CompositeComponent :: CompositeComponent2CompositeCo
 
 mapping blatt1::Assembly::AssemblyContext ::AssemblyContext2AssemblyContext(parent : palladio::core::composition::ComposedStructure) : palladio::core::composition::AssemblyContext {
 	entityName := self.name;
-	encapsulatedComponent__AssemblyContext := self.component.map Component2Component(self);
+//	if (self.resolve(palladio::repository::BasicComponent)->size() < 1)
+//		encapsulatedComponent__AssemblyContext := self.component.map Component2Component(self)
+//	else 
+		encapsulatedComponent__AssemblyContext := self.component.resolveone(palladio::repository::BasicComponent);
+//	endif;
 	parentStructure__AssemblyContext := parent;
-}
-
-mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::BasicComponent {
-	init {result.entityName := self.name;}
-}
-
-// ERROR: Result and out parameters of abstract types must be instantiated or assigned in the init-section
-mapping blatt1::Repository::Component :: Component2Component(ac : blatt1::Assembly::AssemblyContext) : palladio::repository::BasicComponent { //anderer Komponententyp, zB BasicComponent
-	init {self.map Component2Component();}
-	//requiredRoles_InterfaceRequiringEntity := self.requiredInterface.map RequiredInterface2RequiredRole(self);
-	requiredRoles_InterfaceRequiringEntity := ac.requiredRole.map RequiredRole2RequiredRole(result);
-	providedRoles_InterfaceProvidingEntity := ac.providedRole.map ProvidedRole2ProvidedRole(result);
 }
 
 // ERROR: Result and out parameters of abstract types must be instantiated or assigned in the init-section
@@ -52,15 +70,15 @@ mapping blatt1::Repository::Component :: Component2Component(ac : blatt1::Assemb
 //	requiringEntity_RequiredRole := requiringComponent.map Component2Component(); //zyklus schlecht? in beispiel auch, also scheinbar ok
 //}
 
-mapping blatt1::Assembly::Role :: RequiredRole2RequiredRole(requiringComponent : palladio::repository::BasicComponent) : palladio::repository::OperationRequiredRole {
-	init {result.entityName := self.name;}
-	requiringEntity_RequiredRole := requiringComponent;
-}
-
-mapping blatt1::Assembly::Role :: ProvidedRole2ProvidedRole(providingComponent : palladio::repository::BasicComponent) : palladio::repository::OperationProvidedRole {
-	init {result.entityName := self.name;}
-	providingEntity_ProvidedRole := providingComponent;
-}
+//mapping blatt1::Assembly::Role :: RequiredRole2RequiredRole(requiringComponent : palladio::repository::BasicComponent) : palladio::repository::OperationRequiredRole {
+//	init {result.entityName := self.name;}
+//	requiringEntity_RequiredRole := requiringComponent;
+//}
+//
+//mapping blatt1::Assembly::Role :: ProvidedRole2ProvidedRole(providingComponent : palladio::repository::BasicComponent) : palladio::repository::OperationProvidedRole {
+//	init {result.entityName := self.name;}
+//	providingEntity_ProvidedRole := providingComponent;
+//}
 
 mapping blatt1::Assembly::AssemblyConnector :: AssemblyConnector2AssemblyConnector() : palladio::core::composition::AssemblyConnector {
 	
