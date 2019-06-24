@@ -5,15 +5,17 @@ transformation blatt12palladio(in srcModel : blatt1, out destModel : palladio);
 
 main() {
 	srcModel.objects()[blatt1::Repository::Repository] -> map Repository2Repository();
-	srcModel.objects()[blatt1::Repository::Component] -> map Component2Component();
-	srcModel.objects()[blatt1::Assembly::System] -> map System2Allocation();
+	//srcModel.objects()[blatt1::Repository::Component] -> map Component2Component();
+	srcModel.objects()[blatt1::Allocation::Allocation] -> map Allocation2Allocation();
+	//srcModel.objects()[blatt1::Assembly::System] -> map System2System();
 	srcModel.objects()[blatt1::Repository::CompositeComponent] -> map CompositeComponent2CompositeComponent();
 	//srcModel.objects()[blatt1::Assembly::AssemblyContext] -> map AssemblyContext2AssemblyContext();
 	srcModel.objects()[blatt1::Assembly::AssemblyConnector] -> map AssemblyConnector2AssemblyConnector();
 }
 
 mapping blatt1::Repository::Repository :: Repository2Repository() : palladio::repository::Repository {
-	srcModel.objects()[blatt1::Repository::Interface] -> map Interface2Interface(result);
+	interfaces__Repository := self.Interfaces.map Interface2Interface(result);
+	components__Repository := self.Components.map Component2Component(result);
 }
 
 mapping blatt1::Repository::Interface :: Interface2Interface(repo : palladio::repository::Repository) : palladio::repository::OperationInterface {
@@ -46,7 +48,8 @@ mapping blatt1::Repository::Types::Type :: Type2PrimitiveDataType() : palladio::
 	}
 }
 
-mapping blatt1::Repository::Component :: Component2Component() : palladio::repository::BasicComponent {
+mapping blatt1::Repository::Component :: Component2Component(repo : palladio::repository::Repository) : palladio::repository::BasicComponent {
+	init {result.repository__RepositoryComponent := repo}
 	result.entityName := self.name;
 	requiredRoles_InterfaceRequiringEntity := self.requiredInterface.map Interface2RequiredRole(self);
 	providedRoles_InterfaceProvidingEntity := self.providedInterface.map Interface2ProvidedRole(self);
@@ -66,12 +69,12 @@ mapping blatt1::Assembly::System :: System2System() : palladio::system::System {
 	assemblyContexts__ComposedStructure := self.encapsulatedAssemblyContext[blatt1::Assembly::AssemblyContext]-> map AssemblyContext2AssemblyContext(result);
 }
 
-mapping blatt1::Assembly::System :: System2Allocation() : palladio::allocation::Allocation {
+mapping blatt1::Allocation::Allocation :: Allocation2Allocation() : palladio::allocation::Allocation {
 
-	system_Allocation := self.map System2System();
-	targetResourceEnvironment_Allocation := self.environment.map Environment2Environment();
+	system_Allocation := self.System.map System2System();
+	targetResourceEnvironment_Allocation := self.Environment.map Environment2Environment();
 	entityName := "Allocation";
-	allocationContexts_Allocation := self.allocationContext[blatt1::Allocation::AllocationContext]-> map AllocationContext2AllocationContext(result);
+	allocationContexts_Allocation := self.AllocationContexts[blatt1::Allocation::AllocationContext]-> map AllocationContext2AllocationContext(result);
 	
 }
 
