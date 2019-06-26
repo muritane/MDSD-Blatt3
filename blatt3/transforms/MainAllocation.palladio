@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:allocation="http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2" xmlns:resourceenvironment="http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2" xmlns:system="http://palladiosimulator.org/PalladioComponentModel/System/5.2" xsi:schemaLocation="http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//allocation http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//resourceenvironment http://palladiosimulator.org/PalladioComponentModel/System/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//system">
+  <allocation:Allocation id="__fnMoJghEemq1rxe0E2QSw" entityName="Allocation" targetResourceEnvironment_Allocation="/2" system_Allocation="__fsFIJghEemq1rxe0E2QSw">
+    <allocationContexts_Allocation id="__f_AEJghEemq1rxe0E2QSw"/>
+    <allocationContexts_Allocation id="__gGU0JghEemq1rxe0E2QSw"/>
+    <allocationContexts_Allocation id="__gCqcJghEemq1rxe0E2QSw"/>
+  </allocation:Allocation>
+  <system:System id="__fsFIJghEemq1rxe0E2QSw">
+    <assemblyContexts__ComposedStructure id="__fssMJghEemq1rxe0E2QSw" entityName="AppServer"/>
+    <assemblyContexts__ComposedStructure id="__ftTQJghEemq1rxe0E2QSw" entityName="PoolingAudioDB"/>
+    <assemblyContexts__ComposedStructure id="__ft6UJghEemq1rxe0E2QSw" entityName="WebGUI"/>
+  </system:System>
+  <resourceenvironment:ResourceEnvironment entityName="environment">
+    <linkingResources__ResourceEnvironment id="__f0oAJghEemq1rxe0E2QSw" entityName="DatabaseApplicationServerLink" connectedResourceContainers_LinkingResource="__f6uoJghEemq1rxe0E2QSw __f6HkJghEemq1rxe0E2QSw"/>
+    <resourceContainer_ResourceEnvironment id="__f6HkJghEemq1rxe0E2QSw"/>
+    <resourceContainer_ResourceEnvironment id="__f6uoJghEemq1rxe0E2QSw"/>
+  </resourceenvironment:ResourceEnvironment>
+</xmi:XMI>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xsi:schemaLocation="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//repository">
+  <repository:Repository id="_vQnOcJghEemq1rxe0E2QSw">
+    <components__Repository xsi:type="repository:BasicComponent" id="_vSW64JghEemq1rxe0E2QSw" entityName="MediaStore">
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_vS1cAJghEemq1rxe0E2QSw"/>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_vSuHQJghEemq1rxe0E2QSw" requiredInterface__OperationRequiredRole="_vQvxUJghEemq1rxe0E2QSw"/>
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" id="_vR1WcJghEemq1rxe0E2QSw" entityName="MediaManager">
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_vSCKwJghEemq1rxe0E2QSw"/>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_vR8EIJghEemq1rxe0E2QSw" requiredInterface__OperationRequiredRole="_vRR80JghEemq1rxe0E2QSw"/>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_vR5A0JghEemq1rxe0E2QSw" requiredInterface__OperationRequiredRole="_vQvxUJghEemq1rxe0E2QSw"/>
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" id="_vRv24JghEemq1rxe0E2QSw" entityName="DigitalWatermarking">
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_vRyTIJghEemq1rxe0E2QSw"/>
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" id="_vSMi0JghEemq1rxe0E2QSw" entityName="WebGUI">
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_vSSpcJghEemq1rxe0E2QSw"/>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_vSO_EJghEemq1rxe0E2QSw" requiredInterface__OperationRequiredRole="_vRIL0JghEemq1rxe0E2QSw"/>
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" id="_vSD_8JghEemq1rxe0E2QSw" entityName="PoolingAudioDB">
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_vSI4cJghEemq1rxe0E2QSw"/>
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" id="_vRle0JghEemq1rxe0E2QSw" entityName="DBCache">
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_vRtaoJghEemq1rxe0E2QSw"/>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" id="_vRpwQJghEemq1rxe0E2QSw" requiredInterface__OperationRequiredRole="_vQvxUJghEemq1rxe0E2QSw"/>
+    </components__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" id="_vQvxUJghEemq1rxe0E2QSw">
+      <signatures__OperationInterface id="_vQ0p0JghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+      <signatures__OperationInterface id="_vQ6JYJghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" id="_vQ9MsJghEemq1rxe0E2QSw">
+      <signatures__OperationInterface id="_vRA3EJghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+      <signatures__OperationInterface id="_vRFIgJghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" id="_vRR80JghEemq1rxe0E2QSw">
+      <signatures__OperationInterface id="_vRW1UJghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" id="_vRIL0JghEemq1rxe0E2QSw">
+      <signatures__OperationInterface id="_vRL2MJghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+      <signatures__OperationInterface id="_vRPgkJghEemq1rxe0E2QSw" returnType__OperationSignature="/1"/>
+    </interfaces__Repository>
+  </repository:Repository>
+  <repository:PrimitiveDataType/>
+</xmi:XMI>

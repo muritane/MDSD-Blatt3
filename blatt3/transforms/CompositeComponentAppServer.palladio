@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository:CompositeComponent xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xsi:schemaLocation="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//repository" id="_1bgDYJghEemq1rxe0E2QSw" entityName="MediaStore">
+  <assemblyContexts__ComposedStructure id="_1bgDYZghEemq1rxe0E2QSw" entityName="MediaManager"/>
+  <assemblyContexts__ComposedStructure id="_1bhRgJghEemq1rxe0E2QSw" entityName="DBCache"/>
+  <assemblyContexts__ComposedStructure id="_1bgqcJghEemq1rxe0E2QSw" entityName="DigitalWatermarking"/>
+</repository:CompositeComponent>
